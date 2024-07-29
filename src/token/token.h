@@ -18,7 +18,6 @@ typedef enum
 	T_BANG,
 	T_SLASH,
 	T_ASTERISK,
-	T_PERCENT,
 	T_LT,
 	T_GT,
 	T_EQ,
