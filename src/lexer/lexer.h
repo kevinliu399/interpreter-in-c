@@ -13,8 +13,9 @@ typedef struct
 } Lexer;
 
 
-Lexer* new_lexer(char *input);
-TokenType* next_token(Lexer *lexer);
+Lexer* new_lexer(const char *input);
+Token* next_token(Lexer *lexer);
 void lexer_free(Lexer *lexer);
+const char* token_type_name(TokenType type);
 
 #endif // LEXER_H

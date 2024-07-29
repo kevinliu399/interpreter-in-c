@@ -1,5 +1,6 @@
 #include "token.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 // Create a new token with the given type and literal
 Token *new_token(TokenType type, char *literal)
@@ -24,21 +25,18 @@ Token *new_token(TokenType type, char *literal)
 // Free the memory allocated for the token
 void free_token(Token *token)
 {
-    if (token == NULL)
+    if (token != NULL)
     {
-        return;
+        if (token->type != (TokenType)EOF)
+        {
+            free(token->literal);
+        }
+        free(token);
     }
-
-    if (token->type != EOF)
-    {
-        free(token->literal);
-    }
-
-    free(token);
 }
 
 // we need to map the token type to a string representation
-char *t_type_name(int type) {
+char *token_type_name(int type) {
   switch (type) {
     case T_ASSIGN:
       return "ASSIGN";

@@ -8,8 +8,19 @@
 
 #define MAX_IDENT_LENGTH 255
 
+static void read_char(Lexer *l);
+static void skip_whitespace(Lexer *l);
+static bool is_letter(char ch);
+static bool is_digit(char ch);
+static char peek_char(Lexer *l);
+static char *read_identifier(Lexer *l);
+static char *read_number(Lexer *l);
+static TokenType lookup_ident(char *ident);
+static char *read_string(Lexer *l);
+
+
 // Create a new lexer with the given input
-Lexer *new_lexer(char *input)
+Lexer *new_lexer(const char *input)
 {
     Lexer *lexer = (Lexer *)malloc(sizeof(Lexer));
     if (lexer == NULL)
@@ -32,9 +43,9 @@ Lexer *new_lexer(char *input)
     return lexer;
 }
 
-TokenType *next_token(Lexer *lexer)
+Token *next_token(Lexer *lexer)
 {
-	TokenType *token;
+	Token *token;
 
     // skip all whitespace
     skip_whitespace(lexer);
@@ -45,94 +56,94 @@ TokenType *next_token(Lexer *lexer)
             if (peek_char(lexer) == '=')
             {
                 read_char(lexer);
-                token = create_token(T_EQ, "==");
+                token = new_token(T_EQ, "==");
             }
             else
             {
-                token = create_token(T_ASSIGN, "=");
+                token = new_token(T_ASSIGN, "=");
             }
             break;
         case '+':
-            token = create_token(T_PLUS, "+");
+            token = new_token(T_PLUS, "+");
             break;
         case '-':
-            token = create_token(T_MINUS, "-");
+            token = new_token(T_MINUS, "-");
             break;
         case '!':
             if (peek_char(lexer) == '=')
             {
                 read_char(lexer);
-                token = create_token(T_NOT_EQ, "!=");
+                token = new_token(T_NOT_EQ, "!=");
             }
             else
             {
-                token = create_token(T_BANG, "!");
+                token = new_token(T_BANG, "!");
             }
             break;
         case '/':
-            token = create_token(T_SLASH, "/");
+            token = new_token(T_SLASH, "/");
             break;
         case '*':
-            token = create_token(T_ASTERISK, "*");
+            token = new_token(T_ASTERISK, "*");
             break;
         case '<':
-            token = create_token(T_LT, "<");
+            token = new_token(T_LT, "<");
             break;
         case '>':
-            token = create_token(T_GT, ">");
+            token = new_token(T_GT, ">");
             break;
         case ';':
-            token = create_token(T_SEMICOLON, ";");
+            token = new_token(T_SEMICOLON, ";");
             break;
         case ',':
-            token = create_token(T_COMMA, ",");
+            token = new_token(T_COMMA, ",");
             break;
         case '(':
-            token = create_token(T_LPAREN, "(");
+            token = new_token(T_LPAREN, "(");
             break;
         case ')':
-            token = create_token(T_RPAREN, ")");
+            token = new_token(T_RPAREN, ")");
             break;
         case '{':
-            token = create_token(T_LBRACE, "{");
+            token = new_token(T_LBRACE, "{");
             break;
         case '}':
-            token = create_token(T_RBRACE, "}");
+            token = new_token(T_RBRACE, "}");
             break;
         case '[':
-            token = create_token(T_LBRACKET, "[");
+            token = new_token(T_LBRACKET, "[");
             break;
         case ']':
-            token = create_token(T_RBRACKET, "]");
+            token = new_token(T_RBRACKET, "]");
             break;
         case ':':
-            token = create_token(T_COLON, ":");
+            token = new_token(T_COLON, ":");
             break;
         case '\0':
-            token = create_token(T_EOF, "");
+            token = new_token(T_EOF, "");
             break;
         case '"':
-            token = create_token(T_STRING, read_string(lexer));
+            token = new_token(T_STRING, read_string(lexer));
             break;
         default:
             if (is_letter(lexer -> ch))
             {
                 // translate into a string
                 char *ident = read_identifier(lexer);
-                token = create_token(lookup_ident(ident), ident);
+                token = new_token(lookup_ident(ident), ident);
                 free(ident);
                 return token;
             }
             else if (is_digit(lexer -> ch))
             {
                 char *num = read_number(lexer);
-                token = create_token(T_INT, num);
+                token = new_token(T_INT, num);
                 free(num);
                 return token;
             }
             else
             {
-                token = create_token(T_ILLEGAL, "");
+                token = new_token(T_ILLEGAL, "");
             }
 
     }
@@ -206,7 +217,7 @@ static char peek_char(Lexer *l)
     }
 }
 
-static const char *read_identifier(Lexer *l)
+static char *read_identifier(Lexer *l)
 {
     char *ident = malloc(MAX_IDENT_LENGTH);
     char *current = ident;
