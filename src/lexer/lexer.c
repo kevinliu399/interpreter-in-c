@@ -18,7 +18,6 @@ static char *read_number(Lexer *l);
 static TokenType lookup_ident(char *ident);
 static char *read_string(Lexer *l);
 
-
 // Create a new lexer with the given input
 Lexer *new_lexer(const char *input)
 {
@@ -38,114 +37,117 @@ Lexer *new_lexer(const char *input)
 
     lexer->position = 0;
     lexer->read_position = 0;
-    lexer->ch = input[0]; // set the first character of the input
+    lexer->ch = '\0';
+    read_char(lexer);
 
     return lexer;
 }
 
 Token *next_token(Lexer *lexer)
 {
-	Token *token;
+    Token *token;
 
     // skip all whitespace
     skip_whitespace(lexer);
 
-    switch (lexer -> ch)
+    switch (lexer->ch)
     {
-        case '=':
-            if (peek_char(lexer) == '=')
-            {
-                read_char(lexer);
-                token = new_token(T_EQ, "==");
-            }
-            else
-            {
-                token = new_token(T_ASSIGN, "=");
-            }
-            break;
-        case '+':
-            token = new_token(T_PLUS, "+");
-            break;
-        case '-':
-            token = new_token(T_MINUS, "-");
-            break;
-        case '!':
-            if (peek_char(lexer) == '=')
-            {
-                read_char(lexer);
-                token = new_token(T_NOT_EQ, "!=");
-            }
-            else
-            {
-                token = new_token(T_BANG, "!");
-            }
-            break;
-        case '/':
-            token = new_token(T_SLASH, "/");
-            break;
-        case '*':
-            token = new_token(T_ASTERISK, "*");
-            break;
-        case '<':
-            token = new_token(T_LT, "<");
-            break;
-        case '>':
-            token = new_token(T_GT, ">");
-            break;
-        case ';':
-            token = new_token(T_SEMICOLON, ";");
-            break;
-        case ',':
-            token = new_token(T_COMMA, ",");
-            break;
-        case '(':
-            token = new_token(T_LPAREN, "(");
-            break;
-        case ')':
-            token = new_token(T_RPAREN, ")");
-            break;
-        case '{':
-            token = new_token(T_LBRACE, "{");
-            break;
-        case '}':
-            token = new_token(T_RBRACE, "}");
-            break;
-        case '[':
-            token = new_token(T_LBRACKET, "[");
-            break;
-        case ']':
-            token = new_token(T_RBRACKET, "]");
-            break;
-        case ':':
-            token = new_token(T_COLON, ":");
-            break;
-        case '\0':
-            token = new_token(T_EOF, "");
-            break;
-        case '"':
-            token = new_token(T_STRING, read_string(lexer));
-            break;
-        default:
-            if (is_letter(lexer -> ch))
-            {
-                // translate into a string
-                char *ident = read_identifier(lexer);
-                token = new_token(lookup_ident(ident), ident);
-                free(ident);
-                return token;
-            }
-            else if (is_digit(lexer -> ch))
-            {
-                char *num = read_number(lexer);
-                token = new_token(T_INT, num);
-                free(num);
-                return token;
-            }
-            else
-            {
-                token = new_token(T_ILLEGAL, "");
-            }
-
+    case '=':
+        if (peek_char(lexer) == '=')
+        {
+            read_char(lexer);
+            token = new_token(T_EQ, "==");
+        }
+        else
+        {
+            token = new_token(T_ASSIGN, "=");
+        }
+        break;
+    case '+':
+        token = new_token(T_PLUS, "+");
+        break;
+    case '-':
+        token = new_token(T_MINUS, "-");
+        break;
+    case '!':
+        if (peek_char(lexer) == '=')
+        {
+            read_char(lexer);
+            token = new_token(T_NOT_EQ, "!=");
+        }
+        else
+        {
+            token = new_token(T_BANG, "!");
+        }
+        break;
+    case '/':
+        token = new_token(T_SLASH, "/");
+        break;
+    case '*':
+        token = new_token(T_ASTERISK, "*");
+        break;
+    case '<':
+        token = new_token(T_LT, "<");
+        break;
+    case '>':
+        token = new_token(T_GT, ">");
+        break;
+    case ';':
+        token = new_token(T_SEMICOLON, ";");
+        break;
+    case ',':
+        token = new_token(T_COMMA, ",");
+        break;
+    case '(':
+        token = new_token(T_LPAREN, "(");
+        break;
+    case ')':
+        token = new_token(T_RPAREN, ")");
+        break;
+    case '{':
+        token = new_token(T_LBRACE, "{");
+        break;
+    case '}':
+        token = new_token(T_RBRACE, "}");
+        break;
+    case '[':
+        token = new_token(T_LBRACKET, "[");
+        break;
+    case ']':
+        token = new_token(T_RBRACKET, "]");
+        break;
+    case ':':
+        token = new_token(T_COLON, ":");
+        break;
+    case '\0':
+        token = new_token(T_EOF, "");
+        break;
+    case '"':
+        token = new_token(T_STRING, read_string(lexer));
+        break;
+    default:
+        if (is_letter(lexer->ch))
+        {
+            // translate into a string
+            char *ident = read_identifier(lexer);
+            printf("Identifier found: %s\n", ident);
+            TokenType type = lookup_ident(ident);
+            printf("Token Type: %d\n", type);
+            token = new_token(type, ident);
+            free(ident);
+            return token;
+        }
+        else if (is_digit(lexer->ch))
+        {
+            char *num = read_number(lexer);
+            token = new_token(T_INT, num);
+            free(num);
+            return token;
+        }
+        else
+        {
+            token = new_token(T_ILLEGAL, "");
+        }
     }
 
     read_char(lexer);
@@ -166,7 +168,7 @@ static void read_char(Lexer *l)
 {
     if (l->read_position >= strlen(l->input))
     {
-        l->ch = 0;
+        l->ch = '\0';
     }
     else
     {
@@ -194,16 +196,18 @@ static bool is_digit(char ch)
     return '0' <= ch && ch <= '9';
 }
 
-static char *read_number(Lexer *l) {
-  char *num = malloc(MAX_IDENT_LENGTH);
-  char *current = num;
-  while (is_digit(l -> ch)) {
-    *current = l -> ch;
-    current += 1;
-    read_char(l);
-  }
-  *current = '\0';
-  return num;
+static char *read_number(Lexer *l)
+{
+    char *num = malloc(MAX_IDENT_LENGTH);
+    char *current = num;
+    while (is_digit(l->ch))
+    {
+        *current = l->ch;
+        current += 1;
+        read_char(l);
+    }
+    *current = '\0';
+    return num;
 }
 
 // we need peek char to check the next character without consuming it
@@ -212,8 +216,10 @@ static char peek_char(Lexer *l)
     if (l->read_position >= strlen(l->input))
     {
         return '\0';
-    } else {
-        return l -> input[l -> read_position];
+    }
+    else
+    {
+        return l->input[l->read_position];
     }
 }
 
@@ -221,9 +227,9 @@ static char *read_identifier(Lexer *l)
 {
     char *ident = malloc(MAX_IDENT_LENGTH);
     char *current = ident;
-    while (is_letter(l -> ch))
+    while (is_letter(l->ch))
     {
-        *current = l -> ch;
+        *current = l->ch;
         current += 1;
         read_char(l);
     }
@@ -270,14 +276,14 @@ static TokenType lookup_ident(char *ident)
     return T_IDENT;
 }
 
-static char* read_string(Lexer *l)
+static char *read_string(Lexer *l)
 {
     char *str = malloc(MAX_IDENT_LENGTH);
     char *current = str;
     read_char(l); // skip the first "
-    while (l -> ch != '"' && l -> ch != '\0')
+    while (l->ch != '"' && l->ch != '\0')
     {
-        *current = l -> ch;
+        *current = l->ch;
         current += 1;
         read_char(l);
     }

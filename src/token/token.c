@@ -1,22 +1,32 @@
 #include "token.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Create a new token with the given type and literal
 Token *new_token(TokenType type, char *literal)
 {
-    Token *token = (Token *)malloc(sizeof(Token)); // Allocate memory for the token
+    Token *token = (Token *)malloc(sizeof(Token));
     if (token == NULL)
     {
         fprintf(stderr, "Failed to allocate memory for token\n");
         exit(1);
     }
+
     token->type = type;
-    token->literal = literal;
-    if (literal == NULL)
+    if (literal != NULL)
     {
-        free_token(token);
-        return NULL;
+        // strdup : string duplication to isolate the literal from the input
+        token->literal = strdup(literal);
+        if (token->literal == NULL)
+        {
+            fprintf(stderr, "Failed to allocate memory for token literal\n");
+            exit(1);
+        }
+    }
+    else
+    {
+        token->literal = NULL;
     }
 
     return token;
