@@ -3,29 +3,49 @@
 
 typedef enum
 {
-    T_ILLEGAL,
-    T_EOF,
+	T_ILLEGAL,
+	T_EOF,
 
-    // Identifiers + literals
-    T_IDENT,
-    T_INT,
+	// identifiers, literals
+	T_IDENT,
+	T_INT,
+	T_STRING,
 
-    // Operators
-    T_ASSIGN,
-    T_PLUS,
+	//operators
+	T_ASSIGN,
+	T_PLUS,
+	T_MINUS,
+	T_BANG,
+	T_SLASH,
+	T_ASTERISK,
+	T_PERCENT,
+	T_LT,
+	T_GT,
+	T_EQ,
+	T_NOT_EQ,
+	T_AND,
+	T_OR,
 
-    // Delimiters
-    T_COMMA,
-    T_SEMICOLON,
+	//delimiters
+	T_COMMA,
+	T_SEMICOLON,
+	T_LPAREN,
+	T_RPAREN,
+	T_LBRACE,
+	T_RBRACE,
+	T_LBRACKET,
+	T_RBRACKET,
+	T_COLON,
 
-    T_LPAREN,
-    T_RPAREN,
-    T_LBRACE,
-    T_RBRACE,
-
-    // Keywords
-    T_FUNCTION,
-    T_LET,
+	//keywords
+	T_FUNCTION,
+	T_LET,
+	T_IF,
+	T_ELSE,
+	T_RETURN,
+	T_TRUE,
+	T_FALSE,
+	T_WHILE
 } TokenType;
 
 typedef struct
