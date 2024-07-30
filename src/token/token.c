@@ -110,6 +110,10 @@ char *token_type_name(int type) {
       return "EOF";
     case T_STRING:
       return "STRING";
+    case T_AND:
+      return "AND";
+    case T_OR:
+      return "OR";
   }
   return "UNKNOWN_TOKEN";
 }

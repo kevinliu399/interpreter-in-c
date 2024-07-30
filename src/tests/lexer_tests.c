@@ -4,7 +4,7 @@
 #include "../lexer/lexer.h"
 #include "../token/token.h"
 
-void test_next_token() {
+void run_lexer_tests() {
     const char* input = "let five = 5;\n"
                         "let ten = 10;\n"
                         "\n"
@@ -128,9 +128,4 @@ void test_next_token() {
 
     lexer_free(l);
     printf("All tests passed!\n");
-}
-
-int main() {
-    test_next_token();
-    return 0;
 }

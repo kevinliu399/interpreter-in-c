@@ -125,14 +125,26 @@ Token *next_token(Lexer *lexer)
     case '"':
         token = new_token(T_STRING, read_string(lexer));
         break;
+    case '|':
+        if (peek_char(lexer) == '|')
+        {
+            read_char(lexer);
+            token = new_token(T_OR, "||");
+        }
+        break;
+    case '&':
+        if (peek_char(lexer) == '&')
+        {
+            read_char(lexer);
+            token = new_token(T_AND, "&&");
+        }
+        break;
     default:
         if (is_letter(lexer->ch))
         {
             // translate into a string
             char *ident = read_identifier(lexer);
-            printf("Identifier found: %s\n", ident);
             TokenType type = lookup_ident(ident);
-            printf("Token Type: %d\n", type);
             token = new_token(type, ident);
             free(ident);
             return token;
