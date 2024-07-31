@@ -47,7 +47,7 @@ typedef enum
 	T_WHILE
 } TokenType;
 
-typedef struct
+typedef struct Token
 {
     TokenType type;
     char *literal;

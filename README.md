@@ -1,6 +1,6 @@
 implementation of thorsten ball's monkeylang interpreter
 
-to run the program, simply run the following commands:
+to run the program:
 1. create the executable
 ```bash
 make
